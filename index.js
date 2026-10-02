@@ -1,6 +1,10 @@
 export default {
     async fetch(request, env, ctx) {
         const { searchParams } = new URL(request.url);
+        // Access key: set with `wrangler secret put ACCESS_KEY`; requests must carry ?key=...
+        if (env.ACCESS_KEY && searchParams.get("key") !== env.ACCESS_KEY) {
+            return new Response("Forbidden", { status: 403 });
+        }
         const targetUrl = searchParams.get("url");
 
         if (!targetUrl) {
